@@ -1,4 +1,4 @@
-import { ModalConfigValidator, ModelConfig } from "../store";
+import { ModalConfigValidator, ModelConfig, useAccessStore } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
@@ -10,7 +10,11 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
-
+  const accessStore = useAccessStore();
+  const isCustomKey =
+    accessStore.provider === "OpenAI" &&
+    accessStore.openaiApiKey &&
+    accessStore.openaiUrl;
   return (
     <>
       <ListItem title={Locale.Settings.Model}>
@@ -26,7 +30,7 @@ export function ModelConfigList(props: {
           }}
         >
           {allModels
-            .filter((v) => v.available)
+            .filter((v) => (isCustomKey ? true : v.available))
             .map((v, i) => (
               <option value={v.name} key={i}>
                 {v.displayName}

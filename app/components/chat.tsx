@@ -432,8 +432,13 @@ export function ChatActions(props: {
   // switch model
   const currentModel = chatStore.currentSession().mask.modelConfig.model;
   const allModels = useAllModels();
+  const accessStore = useAccessStore();
+  const isCustomKey =
+    accessStore.provider === "OpenAI" &&
+    accessStore.openaiApiKey &&
+    accessStore.openaiUrl;
   const models = useMemo(
-    () => allModels.filter((m) => m.available),
+    () => allModels.filter((m) => (isCustomKey ? true : m.available)),
     [allModels],
   );
   const [showModelSelector, setShowModelSelector] = useState(false);
